@@ -4,6 +4,8 @@ import 'package:easy_clipboard_new/DialogScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dataFile.dart';
 
 class MainScreen extends StatefulWidget {
@@ -37,7 +39,15 @@ class _MainScreenState extends State<MainScreen> {
                   },
                 );
               },
-              icon: const Icon(size: 50, color: Colors.red, Icons.close)),
+              icon: const Icon(size: 50, color: Colors.red, Icons.exit_to_app)),
+          actions: [
+            IconButton(
+                onPressed: () async {
+                 await showPrivacy();
+
+                                 },
+                icon: const Icon(size: 50, color: Colors.red, Icons.privacy_tip)),
+          ],
           title: const Center(
               child: Text(style: TextStyle(fontSize: 24), 'Easy ClipBoard')),
         ),
@@ -158,6 +168,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _addItem() async {
+    print('started adding item');
     ClipboardData? clippedText = await Clipboard.getData('text/plain');
     if (clippedText != null &&
         txtController?.text != '' &&
@@ -195,8 +206,16 @@ class _MainScreenState extends State<MainScreen> {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await Future.wait([
       sp.setStringList('captions', captions),
-      sp.setStringList('links', links),
+      sp.setStringList('links'.isNotEmpty.toString(), links),
       //sp.setStringList('icons', icons)
     ]);
+  }
+
+  Future<void> showPrivacy() async {
+    String urlString='https://www.freeprivacypolicy.com/live/913924e5-a551-4ef6-8a2a-66bfc8527fb5';
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $urlString');
+    }
   }
 }
