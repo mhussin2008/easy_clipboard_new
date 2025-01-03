@@ -21,6 +21,13 @@ class _MainScreenState extends State<MainScreen> {
   bool loaded = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //loadData().then((onValue)=>print('initiate done'));
+  }
+
+  @override
   Widget build(BuildContext context) {
     BoxDecoration deco = BoxDecoration(
         border: Border.all(
@@ -32,27 +39,32 @@ class _MainScreenState extends State<MainScreen> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () async {
-                await save_Data().then(
-                  (onValue) {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                    exit(0);
-                  },
-                );
+                await save_Data();
+
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                exit(0);
               },
-              icon: const Icon(size: 50, color: Colors.red, Icons.exit_to_app)),
+              icon: const Icon(
+                  size: 50, color: Colors.blueAccent, Icons.exit_to_app)),
           actions: [
             IconButton(
                 onPressed: () async {
-                 await showPrivacy();
-
-                                 },
-                icon: const Icon(size: 50, color: Colors.red, Icons.privacy_tip)),
+                  await showPrivacy();
+                },
+                icon: const Icon(
+                    size: 50, color: Colors.greenAccent, Icons.privacy_tip)),
           ],
           title: const Center(
-              child: Text(style: TextStyle(fontSize: 24), 'Easy ClipBoard')),
+              child: Text(style: TextStyle(fontSize: 24), 'Fast ClipBoard')),
         ),
         body: Center(
           child: Column(children: [
+            SizedBox(height: 20,),
+            Row(
+              children: [
+                Text('write link Title here under'),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -80,87 +92,82 @@ class _MainScreenState extends State<MainScreen> {
                   return (loaded == true)
                       ? Expanded(
                           child: SingleChildScrollView(
-                              child: Column(
-                                  children: Items.asMap()
-                                      .entries
-                                      .map((e) => GestureDetector(
-                                            onHorizontalDragEnd:
-                                                (endDetails) async {
-                                              {
-                                                print('ok');
+                          child: Column(
+                              children: Items.asMap()
+                                  .entries
+                                  .map((e) => GestureDetector(
+                                        onHorizontalDragEnd:
+                                            (endDetails) async {
+                                          {
+                                            print('ok');
 
-                                                String result =
-                                                    await showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            const DialogScreen(
-                                                              msgComplement:
-                                                                  'هذا العنصر',
-                                                            ));
-                                                //print(result);
-                                                if (result == 'OK') {
-                                                  //print('deleting');
-                                                  Items.removeAt(e.key);
-                                                }
-                                              }
-                                              setState(() {});
-                                            },
-                                            onTap: () async {
-                                              await Clipboard.setData(
-                                                  ClipboardData(
-                                                      text: e.value.link));
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                backgroundColor: Colors.cyan,
-                                                content: Text(
-                                                    "link copied to clipboard"),
-                                              ));
-                                            },
-                                            child: Column(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5),
-                                                        decoration: deco,
-                                                        child: Text(
-                                                            e.value.caption),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(5),
-                                                          decoration: deco,
-                                                          child: Text(
-                                                              e.value.link),
-                                                        ),
-                                                      ),
-                                                    ],
+                                            String result = await showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        const DialogScreen(
+                                                          msgComplement:
+                                                              'هذا العنصر',
+                                                        ));
+                                            //print(result);
+                                            if (result == 'OK') {
+                                              //print('deleting');
+                                              Items.removeAt(e.key);
+                                            }
+                                          }
+                                          setState(() {});
+                                        },
+                                        onTap: () async {
+                                          await Clipboard.setData(ClipboardData(
+                                              text: e.value.link));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            behavior: SnackBarBehavior.floating,
+                                            backgroundColor: Colors.cyan,
+                                            content: Text(
+                                                "link copied to clipboard"),
+                                          ));
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    decoration: deco,
+                                                    child:
+                                                        Text(e.value.caption),
                                                   ),
-                                                ),
-                                                Container(
-                                                  height: 20,
-                                                )
-                                              ],
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5),
+                                                      decoration: deco,
+                                                      child: Text(e.value.link),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ))
-                                      .toList())),
-                        )
+                                            Container(
+                                              height: 20,
+                                            )
+                                          ],
+                                        ),
+                                      ))
+                                  .toList()),
+                        ))
                       : const CircularProgressIndicator();
                 })
           ]),
@@ -185,17 +192,21 @@ class _MainScreenState extends State<MainScreen> {
     if (loaded == true) return;
     SharedPreferences sp = await SharedPreferences.getInstance();
 
-    var captions = sp.getStringList('captions');
-    var links = sp.getStringList('links');
+    List<String> captions = sp.getStringList('captions') ?? [];
+    List<String> links = sp.getStringList('links') ?? [];
     //var icons=sp.getStringList('icons') ;
-
+    print(captions);
+    print('----------------');
+    print(links);
+    print('/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\');
     Items.clear();
 
-    if (captions != null && captions.isNotEmpty) {
+    if (captions.isNotEmpty && links.isNotEmpty && captions.isNotEmpty) {
       for (int i = 0; i < captions.length; i++) {
-        Items.add(ItemData(captions[i], links![i]));
+        Items.add(ItemData(captions[i], links[i]));
       }
     }
+
     loaded = true;
   }
 
@@ -206,13 +217,15 @@ class _MainScreenState extends State<MainScreen> {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await Future.wait([
       sp.setStringList('captions', captions),
-      sp.setStringList('links'.isNotEmpty.toString(), links),
+      sp.setStringList('links', links),
       //sp.setStringList('icons', icons)
     ]);
+    print('Saving Process Completed Successfully');
   }
 
   Future<void> showPrivacy() async {
-    String urlString='https://www.freeprivacypolicy.com/live/913924e5-a551-4ef6-8a2a-66bfc8527fb5';
+    String urlString =
+        'https://www.freeprivacypolicy.com/live/913924e5-a551-4ef6-8a2a-66bfc8527fb5';
     final Uri url = Uri.parse(urlString);
     if (!await launchUrl(url)) {
       throw Exception('Could not launch $urlString');
